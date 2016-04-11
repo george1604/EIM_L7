@@ -1,5 +1,14 @@
 package ro.pub.cs.systems.pdsd.lab07.xkcdcartoondisplayer.graphicuserinterface;
 
+import java.io.IOException;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import ro.pub.cs.systems.pdsd.lab07.xkcdcartoondisplayer.R;
 import ro.pub.cs.systems.pdsd.lab07.xkcdcartoondisplayer.entities.XkcdCartoonInfo;
 import ro.pub.cs.systems.pdsd.xkcdcartoondisplayer.general.Constants;
@@ -42,10 +51,23 @@ public class XkcdCartoonDisplayerActivity extends Activity {
 			XkcdCartoonInfo xkcdCartoonInfo = new XkcdCartoonInfo();
 			
 			// TODO: exercise 5a)
-			// 1. obtain the content of the web page (whose Internet address is stored in urls[0])
+			// 1. obtain the content of the web page (whose Internet address is stored in urls[0])]
 			// - create an instance of a HttpClient object
+			HttpClient httpClient = new DefaultHttpClient();
+			
 			// - create an instance of a HttpGet object
+			HttpGet httpGet = new HttpGet(urls[0]);
 			// - create an instance of a ResponseHandler object
+			try {
+				HttpResponse responseHandler = httpClient.execute(httpGet);
+				HttpEntity httpPostEntity = httpPostResponse.getEntity();
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			// - execute the request, thus obtaining the web page source code
 			
 			// 2. parse the web page source code
