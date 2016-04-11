@@ -8,6 +8,9 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import ro.pub.cs.systems.pdsd.lab07.xkcdcartoondisplayer.R;
 import ro.pub.cs.systems.pdsd.lab07.xkcdcartoondisplayer.entities.XkcdCartoonInfo;
@@ -59,17 +62,26 @@ public class XkcdCartoonDisplayerActivity extends Activity {
 			HttpGet httpGet = new HttpGet(urls[0]);
 			// - create an instance of a ResponseHandler object
 			try {
-				HttpResponse responseHandler = httpClient.execute(httpGet);
-				HttpEntity httpPostEntity = httpPostResponse.getEntity();
+				HttpResponse httpGetResponse = httpClient.execute(httpGet);
+				// - execute the request, thus obtaining the web page source code
+				HttpEntity httpPostEntity = httpGetResponse.getEntity();
+				Document document = Jsoup.parse(httpPostEntity.toString());
+				Element htmlTag = document.child(0);
+				
+				Element divTagIdCtitle = htmlTag.getElementsByAttributeValue(Constants.ID_ATTRIBUTE, Constants.CTITLE_VALUE).first();
+				xkcdCartoonInfo.setCartoonTitle(divTagIdCtitle.ownText());
+				
+				Element divTagIdComic = htmlTag.getElementsByAttributeValue(Constants.ID_ATTRIBUTE, Constants.COMIC_VALUE).first();
+				String comicAddress = divTagIdComic.getElementsByTag(Constants.IMG_TAG).attr(Constants.SRC_ATTRIBUTE);
+				
+				
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-			// - execute the request, thus obtaining the web page source code
-			
+			}			
 			// 2. parse the web page source code
 			// - cartoon title: get the tag whose id equals "ctitle"
 			// - cartoon url
